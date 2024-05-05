@@ -1,0 +1,38 @@
+set dotenv-load
+
+test:
+	echo $DATABASE_URL
+
+# Format Golang
+format:
+	gofumpt -l -w .
+	goimports-reviser -rm-unused -set-alias ./...
+	golines -w -m 120 *.go
+
+# build -> build application
+build:
+	go build -o .tmp/main ./cmd
+
+# run -> application
+run:
+	.tmp/main
+
+# dev -> run build then run it
+dev: 
+	watchexec -r -c -e go -- just build run
+
+# health -> Hit Health Check Endpoint
+health:
+	curl -s http://localhost:8000/healthz | jq
+
+# migrate-create -> create migration
+migrate-create NAME:
+	migrate create -ext sql -dir ./migrations -seq {{NAME}}
+
+# migrate-up -> up migration
+migrate-up:
+	migrate -path ./migrations -database sqlite3://$DATABASE_URL up
+
+# seed-issue -> seeding issue table
+seed-issue:
+	go run ./cmd/seeder

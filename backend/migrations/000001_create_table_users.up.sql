@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS "users"(
+    "id" VARCHAR PRIMARY KEY,
+    "name" VARCHAR NOT NULL,
+    "email" VARCHAR NOT NULL UNIQUE,
+    "role" VARCHAR NOT NULL,
+    "is_active" INTEGER DEFAULT 0,
+    "password" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
